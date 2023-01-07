@@ -29,9 +29,9 @@ https://www.texttool.com/ascii-font#p=display&f=Larry%203D&t=%5C
 Numbers
    _          ___          __        __ __         ______        ____       ________      __          __           __        __
  /' \       /'___`\      /'__`\     /\ \\ \       /\  ___\      /'___\     /\_____  \   /'_ `\      /'_ `\       /'__`\     /\_\
-/\_, \     /\_\ /\ \    /\_\L\ \    \ \ \\ \      \ \ \__/     /\ \__/     \/___//'/'  /\ \L\ \    /\ \L\ \     /\ \/\ \    \/_/
-\/_/\ \    \/_/// /__   \/_/_\_<_    \ \ \\ \_     \ \___``\   \ \  _``\       /' /'   \/_> _ <_   \ \___, \    \ \ \ \ \
-   \ \ \      // /_\ \    /\ \L\ \    \ \__ ,__\    \/\ \L\ \   \ \ \L\ \     /' /'      /\ \L\ \   \/__,/\ \    \ \ \_\ \      __
+/\_, \     /\_\ /\ \    /\_\L\ \    \ \ \\ \      \ \ \__/     /\ \__/     \/___//'/'  /\ \L\ \    /\ \L\ \     /\ \/\ \    \/_/      _______
+\/_/\ \    \/_/// /__   \/_/_\_<_    \ \ \\ \_     \ \___``\   \ \  _``\       /' /'   \/_> _ <_   \ \___, \    \ \ \ \ \            /\______\
+   \ \ \      // /_\ \    /\ \L\ \    \ \__ ,__\    \/\ \L\ \   \ \ \L\ \     /' /'      /\ \L\ \   \/__,/\ \    \ \ \_\ \      __   \/______/
     \ \_\    /\______/    \ \____/     \/_/\_\_/     \ \____/    \ \____/    /\_/        \ \____/        \ \_\    \ \____/     /\_\
      \/_/    \/_____/      \/___/         \/_/        \/___/      \/___/     \//          \/___/          \/_/     \/___/      \/_/
 
@@ -46,7 +46,68 @@ import (
 	"time"
 )
 
+//newline in ascii is 0x0a
+
 func main() {
 	dt := time.Now()
-	fmt.Println(dt.String())
+	fakeTime := []rune(`010`)
+	//newLine := 0x0a
+	fmt.Print("Real Time: " + dt.Format("15:04\n"))
+	fmt.Println("Fake Time: " + string(fakeTime))
+	fmt.Println(string(numbers()['1'][1]))
+	fmt.Print(asciiPrint(fakeTime))
+}
+
+// len(numbers[0]
+// need a way to save state after the new line is reached and then continue from there
+func asciiPrint(input []rune) string {
+	var output string
+	var z int
+	//var tmp int
+	for i := 0; i < len(input); i++ {
+		z = 0
+		for {
+			if numbers()[input[i]][z] == 0x0a {
+				//tmp = z
+				break
+			}
+			output = output + string(numbers()[input[i]][z])
+			z++
+		}
+
+	}
+
+	return output
+}
+
+func numbers() map[rune]string {
+	var nums = map[rune]string{
+		// 		'0': `
+		//   __
+		//  / __` + "`" + `\
+		// /\ \/\ \
+		// \ \ \ \ \
+		//  \ \ \_\ \
+		//   \ \____/
+		//    \/___/ `,
+		// 		'1': `
+		//   __
+		//  /' \
+		// /\_, \
+		// \/_/\ \
+		//    \ \ \
+		//     \ \_\
+		//      \/_/`,
+
+		'0': `00
+99
+00
+`,
+
+		'1': `11
+22
+11
+`,
+	}
+	return nums
 }

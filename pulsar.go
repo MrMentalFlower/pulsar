@@ -59,7 +59,7 @@ func main() {
 }
 
 // len(numbers[0]
-// need a way to save state after the new line is reached and then continue from ther
+// need a way to save state after the new line is reached and then continue from there
 func asciiPrint(input []rune) string {
 	var output string
 	var z int

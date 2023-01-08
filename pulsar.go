@@ -42,6 +42,7 @@ Numbers
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -52,13 +53,29 @@ import (
 // newline in ascii is 0x0a
 
 func main() {
-	var tmp string
+	var tmp, dt string
+	var timeFormat, help bool
+
+	flag.BoolVar(&timeFormat, "12", true, "Set 12 hour time")
+	flag.BoolVar(&timeFormat, "24", false, "Set 24 hour time")
+	flag.Parse()
+
 	for {
-		var dt string = time.Now().Format("15:04")
+		if timeFormat {
+			dt = time.Now().Format("03:04")
+		} else {
+			dt = time.Now().Format("15:04")
+		}
+		if !help {
+			fmt.Println("-h for commands")
+			help = true
+			time.Sleep(1500000000)
+		}
+
 		if tmp != dt {
 			CLS()
-			fmt.Print("Real Time: " + dt)
-			fmt.Println(asciiPrint([]rune(dt)))
+			fmt.Print(asciiPrint([]rune(dt)))
+
 		}
 		tmp = dt
 

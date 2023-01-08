@@ -43,19 +43,42 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"runtime"
 	"time"
 )
 
-//newline in ascii is 0x0a
+// newline in ascii is 0x0a
 
 func main() {
-	dt := time.Now()
-	fakeTime := []rune(`010`)
-	//newLine := 0x0a
-	fmt.Print("Real Time: " + dt.Format("15:04\n"))
-	fmt.Println("Fake Time: " + string(fakeTime))
-	fmt.Println(string(numbers()['1'][1]))
-	fmt.Print(asciiPrint(fakeTime))
+	var tmp string
+	for {
+		var dt string = time.Now().Format("15:04")
+		if tmp != dt {
+			CLS()
+			fmt.Print("Real Time: " + dt)
+			fmt.Println(asciiPrint([]rune(dt)))
+		}
+		tmp = dt
+
+	}
+}
+
+// Code from MasterDimmy https://github.com/MasterDimmy/go-cls/blob/main/cls.go
+func CLS() {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "linux":
+		cmd = exec.Command("clear") //Linux example, its tested
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "cls") //Windows example, its tested
+	default:
+		fmt.Println("CLS for ", runtime.GOOS, " not implemented")
+		return
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
 
 // len(numbers[0]
@@ -63,17 +86,25 @@ func main() {
 func asciiPrint(input []rune) string {
 	var output string
 	var z int
-	//var tmp int
-	for i := 0; i < len(input); i++ {
-		z = 0
-		for {
-			if numbers()[input[i]][z] == 0x0a {
-				//tmp = z
-				break
+	var tmp [20]int
+	for {
+		for i := 0; i < len(input); i++ {
+			z = tmp[i]
+			for {
+				if z == len(numbers()[input[i]]) {
+					return output
+				}
+
+				if numbers()[input[i]][z] == 0x0a {
+					tmp[i] = z + 1
+					//output = output + " "
+					break
+				}
+				output = output + string(numbers()[input[i]][z])
+				z++
 			}
-			output = output + string(numbers()[input[i]][z])
-			z++
 		}
+		output = output + "\n"
 
 	}
 
@@ -82,31 +113,114 @@ func asciiPrint(input []rune) string {
 
 func numbers() map[rune]string {
 	var nums = map[rune]string{
-		// 		'0': `
-		//   __
-		//  / __` + "`" + `\
-		// /\ \/\ \
-		// \ \ \ \ \
-		//  \ \ \_\ \
-		//   \ \____/
-		//    \/___/ `,
-		// 		'1': `
-		//   __
-		//  /' \
-		// /\_, \
-		// \/_/\ \
-		//    \ \ \
-		//     \ \_\
-		//      \/_/`,
-
-		'0': `00
-99
-00
+		'0': `
+  ___     
+ / __ \   
+/\ \/\ \  
+\ \ \ \ \ 
+ \ \ \_\ \
+  \ \____/
+   \/___/ 
 `,
 
-		'1': `11
-22
-11
+		'1': `
+  __     
+ /' \    
+/\_, \   
+\/_/\ \  
+   \ \ \ 
+    \ \_\
+     \/_/
+`,
+
+		'2': `
+   ___     
+ /'___` + "`" + `\   
+/\_\ /\ \  
+\/_/// /__ 
+   // /_\ \
+  /\______/
+  \/_____/ 
+`,
+
+		'3': `
+   __     
+ /'__` + "`" + `\   
+/\_\L\ \  
+\/_/_\_<_ 
+  /\ \L\ \
+  \ \____/
+   \/___/ 
+`,
+
+		'4': `
+ __ __      
+/\ \\ \     
+\ \ \\ \    
+ \ \ \\ \_  
+  \ \__ ,__\
+   \/_/\_\_/
+      \/_/  
+`,
+
+		'5': `
+ ______    
+/\  ___\   
+\ \ \__/   
+ \ \___` + "`" + `` + "`" + `\ 
+  \/\ \L\ \
+   \ \____/
+    \/___/ 
+`,
+
+		'6': `
+  ____    
+ /'___\   
+/\ \__/   
+\ \  _` + "`" + `` + "`" + `\ 
+ \ \ \L\ \
+  \ \____/
+   \/___/ 
+`,
+
+		'7': `
+ ________ 
+/\_____  \
+\/___//'/'
+    /' /' 
+   /' /'  
+  /\_/    
+  \//     
+`,
+
+		'8': `
+   __     
+ /'_ ` + "`" + `\   
+/\ \L\ \  
+\/_> _ <_ 
+  /\ \L\ \
+  \ \____/
+   \/___/ 
+`,
+
+		'9': `
+   __      
+ /'_  \    
+/\ \L\ \   
+\ \___, \  
+ \/__,/\ \ 
+      \ \_\
+       \/_/
+`,
+
+		':': `
+ __    
+/\_\   
+\/_/   
+       
+    __ 
+   /\_\
+   \/_/
 `,
 	}
 	return nums

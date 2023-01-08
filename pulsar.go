@@ -10,7 +10,7 @@
 Date: 2023 1-5
 Creator: flower
 Description: A simple CLI clock that just displays time
-
+Version: 1.0
 */
 
 /*
@@ -52,34 +52,47 @@ import (
 
 // newline in ascii is 0x0a
 
-func main() {
-	var tmp, currentTime string
-	var timeFormat, help bool
+var globalTime string
 
-	flag.BoolVar(&timeFormat, "12", true, "Set 12 hour time")
-	flag.BoolVar(&timeFormat, "24", false, "Set 24 hour time")
+func main() {
+	var help bool = true
+	var timeMode [2]*bool
+
+	timeMode[0] = flag.Bool("12", false, "sets time to 12 hour format")
+	timeMode[1] = flag.Bool("24", false, "sets time to 24 hour format")
 	flag.Parse()
+	writeOut(timeFormat(help, timeMode))
+	help = false
 
 	for {
-		if timeFormat {
-			currentTime = time.Now().Format("03:04")
-		} else {
-			currentTime = time.Now().Format("15:04")
-		}
-		if !help {
-			fmt.Println("-h for commands")
-			help = true
-			time.Sleep(1500000000)
-		}
 
-		if tmp != currentTime {
-			CLS()
-			fmt.Print(asciiPrint([]rune(currentTime)))
-
-		}
-		tmp = currentTime
-
+		writeOut(timeFormat(help, timeMode))
 	}
+}
+
+func writeOut(currentTime string) {
+	if currentTime != globalTime {
+		CLS()
+		fmt.Print(asciiPrint([]rune(currentTime)))
+	}
+	globalTime = currentTime
+}
+
+func timeFormat(help bool, timeFormat [2]*bool) string {
+	if *timeFormat[0] {
+		return time.Now().Format("03:04  PM")
+	} else if *timeFormat[1] && help || !help {
+		return time.Now().Format("15:04")
+	}
+
+	if help {
+		fmt.Println("-h for commands")
+		time.Sleep(1500000000)
+		return time.Now().Format("15:04")
+	} else {
+		return time.Now().Format("15:04")
+	}
+
 }
 
 // Code from MasterDimmy https://github.com/MasterDimmy/go-cls/blob/main/cls.go
@@ -125,8 +138,8 @@ func asciiPrint(input []rune) string {
 		output = output + "\n"
 
 	}
-
 	return output
+
 }
 
 func numbers() map[rune]string {
@@ -239,6 +252,46 @@ func numbers() map[rune]string {
     __ 
    /\_\
    \/_/
+`,
+
+		'A': `
+ ______     
+/\  _  \    
+\ \ \L\ \   
+ \ \  __ \  
+  \ \ \/\ \ 
+   \ \_\ \_\
+    \/_/\/_/
+`,
+
+		'M': `
+  _   _     
+ / \_/ \    
+/\ \__\ \   
+\ \ \_/\ \  
+ \ \ \\ \ \ 
+  \ \_\\ \_\
+   \/_/ \/_/
+`,
+
+		'P': `
+ ____    
+/\  _` + "`" + `\  
+\ \ \L\ \
+ \ \ ,__/
+  \ \ \/ 
+   \ \_\ 
+    \/_/ 
+`,
+
+		' ': `
+  
+  
+  
+  
+  
+  
+  
 `,
 	}
 	return nums

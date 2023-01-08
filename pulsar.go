@@ -53,7 +53,7 @@ import (
 // newline in ascii is 0x0a
 
 func main() {
-	var tmp, dt string
+	var tmp, currentTime string
 	var timeFormat, help bool
 
 	flag.BoolVar(&timeFormat, "12", true, "Set 12 hour time")
@@ -62,9 +62,9 @@ func main() {
 
 	for {
 		if timeFormat {
-			dt = time.Now().Format("03:04")
+			currentTime = time.Now().Format("03:04")
 		} else {
-			dt = time.Now().Format("15:04")
+			currentTime = time.Now().Format("15:04")
 		}
 		if !help {
 			fmt.Println("-h for commands")
@@ -72,12 +72,12 @@ func main() {
 			time.Sleep(1500000000)
 		}
 
-		if tmp != dt {
+		if tmp != currentTime {
 			CLS()
-			fmt.Print(asciiPrint([]rune(dt)))
+			fmt.Print(asciiPrint([]rune(currentTime)))
 
 		}
-		tmp = dt
+		tmp = currentTime
 
 	}
 }
@@ -102,23 +102,24 @@ func CLS() {
 // need a way to save state after the new line is reached and then continue from ther
 func asciiPrint(input []rune) string {
 	var output string
-	var z int
+	var character int
 	var tmp [20]int
+
 	for {
 		for i := 0; i < len(input); i++ {
-			z = tmp[i]
+			character = tmp[i]
 			for {
-				if z == len(numbers()[input[i]]) {
+				if character == len(numbers()[input[i]]) {
 					return output
 				}
 
-				if numbers()[input[i]][z] == 0x0a {
-					tmp[i] = z + 1
+				if numbers()[input[i]][character] == 0x0a {
+					tmp[i] = character + 1
 					//output = output + " "
 					break
 				}
-				output = output + string(numbers()[input[i]][z])
-				z++
+				output = output + string(numbers()[input[i]][character])
+				character++
 			}
 		}
 		output = output + "\n"
